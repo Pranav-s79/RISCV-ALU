@@ -1,17 +1,22 @@
 module alu(
-    input [31:0] a,
-    input [31:0] b,
-    input [3:0] alu_op,
-    output reg [31:0] result
+    input  [31:0] a,
+    input  [31:0] b,
+    input  [3:0]  alu_op,
+    output reg [31:0] result,
+    output zero
 );
 
-always @(*) begin //allows for rerun when any input changes
-    case(alu_op)
-    default: result = 32'b0
-        4'b0000:result = a+b; // use 4'b0000 because ADD is assigned to 0_10 
-        4'b0001: result = a+(~b+1); //4'b0001 because SUB is assigned to 1_10
+    always @(*) begin
+        case (alu_op)
+            4'b0000: result = a + b;          // ADD
+            4'b0001: result = a + (~b + 1);   // SUB
+            4'b0010: result = a & b;          // AND
+            4'b0011: result = a | b;          // OR
+            4'b0100: result = a ^ b;          // XOR
+            default: result = 32'b0;
+        endcase
+    end
 
-    endcase
-end 
+    assign zero = (result == 32'b0);
 
 endmodule
